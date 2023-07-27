@@ -1,11 +1,15 @@
 package br.dev.murilopereira.spring_case.controller;
 
 import br.dev.murilopereira.spring_case.dto.CustomUserDetails;
+import br.dev.murilopereira.spring_case.dto.SuccessResponseDTO;
+import br.dev.murilopereira.spring_case.dto.TaskDTO;
 import br.dev.murilopereira.spring_case.model.Task;
 import br.dev.murilopereira.spring_case.repository.TaskRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 @Controller
@@ -23,24 +30,29 @@ public class TaskController {
     private TaskRepository taskRepository;
 
     Logger logger = LoggerFactory.getLogger(TaskController.class);
-    @PostMapping(path="/create")
-    public @ResponseBody Task createTask(
-            @RequestParam(name = "title") String title,
-            @RequestParam(name = "done", defaultValue = "false", required = false) boolean done,
-            @RequestParam(name = "user_id") String user_id
-            ) {
+    @PostMapping(path="/new")
+    public @ResponseBody ResponseEntity<?> createTask(@RequestBody TaskDTO taskDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Task task = new Task();
-        task.setDone(done);
-        task.setTitle(title);
-        task.setUsers_iduser(user_id);
+        task.setDone(taskDto.done());
+        task.setTitle(taskDto.title());
+        task.setUsers_iduser(userDetails.getUserUUID());
 
-        return taskRepository.save(task);
+        task = taskRepository.save(task);
+        return new ResponseEntity<SuccessResponseDTO>(
+                new SuccessResponseDTO("Task created with success", task, new ArrayList<>()),
+                new HttpHeaders(),
+                200
+        );
     }
 
     @GetMapping(path="/all")
-    public @ResponseBody Iterable<Task> listTasks(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        logger.info(userDetails.getUserUUID());
+    public @ResponseBody ResponseEntity<?> listTasks(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Iterable<Task> taskList = taskRepository.findAllByUserId(userDetails.getUserUUID());
 
-        return taskRepository.findAll();
+        return new ResponseEntity<SuccessResponseDTO>(
+                new SuccessResponseDTO("Task listed with success", taskList, new ArrayList<>()),
+                new HttpHeaders(),
+                200
+        );
     }
 }

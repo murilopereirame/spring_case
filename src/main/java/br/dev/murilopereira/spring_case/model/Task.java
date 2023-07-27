@@ -1,5 +1,7 @@
 package br.dev.murilopereira.spring_case.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -18,6 +20,7 @@ public class Task {
     @Column(name = "done")
     private boolean done;
 
+    @JsonIgnore()
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
     @JoinColumn(name="users_iduser", insertable = false, updatable = false)
     private User user;
