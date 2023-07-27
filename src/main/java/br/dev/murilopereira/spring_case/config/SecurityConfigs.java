@@ -19,13 +19,10 @@ public class SecurityConfigs {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable().authorizeHttpRequests()
-                // dont authenticate this particular request
-                // all other requests need to be authenticated
                 .requestMatchers("/users/auth").permitAll()
+                .requestMatchers("/users/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                // make sure we use stateless session; session won't be used to
-                // store user's state.
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

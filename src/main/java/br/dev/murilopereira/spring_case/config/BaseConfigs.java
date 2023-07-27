@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class BaseConfigs {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/users/auth");
+        return (web) -> web.ignoring().requestMatchers("/users/auth", "/users/register");
     }
 
     @Bean

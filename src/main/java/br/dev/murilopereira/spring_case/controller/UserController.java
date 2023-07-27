@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,12 +39,16 @@ public class UserController {
     Logger logger = LoggerFactory.getLogger(UserController.class);
     @Transactional(rollbackFor = Exception.class)
     @PostMapping(path="/register", consumes = "application/json", produces = "application/json")
-    public @ResponseBody User registerNewUser(@Valid @RequestBody UserDTO user) {
+    public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserDTO user) {
+        if(userService.doesUserExists(user.getEmail())) {
+            return new ResponseEntity<>(new ErrorResponseDTO("User already registered", "USER_ALREADY_EXISTS", new ArrayList<>()), new HttpHeaders(), 400);
+        }
+
         User usr = new User();
         usr.setEmail(user.getEmail());
         usr.setPassword(passwordEncoder.encode(user.getPassword()));
 
-       return userRepository.save(usr);
+       return new ResponseEntity<User>(userRepository.save(usr), new HttpHeaders(), 201);
     }
 
     @PostMapping(value="/auth")
