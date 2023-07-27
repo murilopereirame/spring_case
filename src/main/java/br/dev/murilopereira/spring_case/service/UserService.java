@@ -1,5 +1,6 @@
 package br.dev.murilopereira.spring_case.service;
 
+import br.dev.murilopereira.spring_case.dto.CustomUserDetails;
 import br.dev.murilopereira.spring_case.model.User;
 import br.dev.murilopereira.spring_case.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +30,13 @@ public class UserService {
         return user;
     }
 
-    public org.springframework.security.core.userdetails.User loadUserByEmailAsUserDetails(String email) {
+    public CustomUserDetails loadUserByEmailAsUserDetails(String email) {
         User user = userRepository.findByEmail(email);
         List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>(1);
         authList.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
+        return new CustomUserDetails(
+                user,
                 true,
                 true,
                 true,

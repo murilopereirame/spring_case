@@ -1,5 +1,6 @@
 package br.dev.murilopereira.spring_case.config;
 
+import br.dev.murilopereira.spring_case.dto.CustomUserDetails;
 import br.dev.murilopereira.spring_case.service.UserService;
 import br.dev.murilopereira.spring_case.util.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -54,7 +55,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // Once we get the token validate it.
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            User usr = userService.loadUserByEmailAsUserDetails(username);
+            CustomUserDetails usr = userService.loadUserByEmailAsUserDetails(username);
 
             // if token is valid configure Spring Security to manually set
             // authentication

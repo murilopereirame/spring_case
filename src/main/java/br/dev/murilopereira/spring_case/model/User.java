@@ -31,6 +31,12 @@ public class User{
    @OneToMany(mappedBy="user")
    private Set<SubTask> subTasks;
 
+   public User() {}
+   public User(User user) {
+       this.email = user.getEmail();
+       this.iduser = user.getUuid();
+   }
+
    public String getUuid() {
        return iduser;
    }
