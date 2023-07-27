@@ -45,7 +45,7 @@ public class TaskController {
         );
     }
 
-    @GetMapping(path="/all")
+    @GetMapping(path="/list")
     public @ResponseBody ResponseEntity<?> listTasks(@AuthenticationPrincipal CustomUserDetails userDetails) {
         Iterable<Task> taskList = taskRepository.findAllByUserId(userDetails.getUserUUID());
 

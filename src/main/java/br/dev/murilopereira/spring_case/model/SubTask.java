@@ -1,5 +1,6 @@
 package br.dev.murilopereira.spring_case.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -13,6 +14,7 @@ public class SubTask {
     private String content;
     private boolean done;
 
+    @JsonIgnore()
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
     @JoinColumn(name="users_iduser", insertable = false, updatable = false)
     private User user;
@@ -20,6 +22,7 @@ public class SubTask {
     @Column(name = "users_iduser")
     private String users_iduser;
 
+    @JsonIgnore()
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Task.class)
     @JoinColumn(name="tasks_idtask", insertable = false, updatable = false)
     private Task task;
