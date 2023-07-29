@@ -1,6 +1,7 @@
 package br.dev.murilopereira.spring_case.controller;
 
 import br.dev.murilopereira.spring_case.dto.CustomUserDetails;
+import br.dev.murilopereira.spring_case.dto.ErrorResponseDTO;
 import br.dev.murilopereira.spring_case.dto.SubTaskDTO;
 import br.dev.murilopereira.spring_case.dto.SuccessResponseDTO;
 import br.dev.murilopereira.spring_case.model.SubTask;
@@ -62,13 +63,25 @@ public class SubTaskController {
             @RequestBody SubTaskDTO subTaskDTO,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        subTaskRepository.updateSubTaskByTaskIdAndId(
+        Integer updated = subTaskRepository.updateSubTaskByTaskIdAndId(
                 userDetails.getUserUUID(),
                 taskId,
                 subtaskId,
                 subTaskDTO.content(),
                 subTaskDTO.done()
         );
+
+        if(updated == 0) {
+            return ResponseEntity
+                    .status(404)
+                    .body(
+                            new ErrorResponseDTO(
+                                    "SubTask Not Found",
+                                    "NOT_FOUND",
+                                    new ArrayList<>()
+                            )
+                    );
+        }
 
         return new ResponseEntity<SuccessResponseDTO>(
                 new SuccessResponseDTO("SubTasks updated with success", Map.of("updated", true), new ArrayList<>()),
@@ -83,11 +96,23 @@ public class SubTaskController {
             @PathVariable(value="task_id") String taskId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        subTaskRepository.deleteSubTaskByTaskIdAndId(
+        Integer deleted = subTaskRepository.deleteSubTaskByTaskIdAndId(
                 userDetails.getUserUUID(),
                 taskId,
                 subtaskId
         );
+
+        if(deleted == 0) {
+            return ResponseEntity
+                    .status(404)
+                    .body(
+                            new ErrorResponseDTO(
+                                    "SubTask Not Found",
+                                    "NOT_FOUND",
+                                    new ArrayList<>()
+                            )
+                    );
+        }
 
         return new ResponseEntity<SuccessResponseDTO>(
                 new SuccessResponseDTO(

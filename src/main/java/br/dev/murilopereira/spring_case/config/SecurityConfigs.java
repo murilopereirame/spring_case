@@ -21,6 +21,7 @@ public class SecurityConfigs {
         httpSecurity.csrf().disable().authorizeHttpRequests()
                 .requestMatchers("/users/auth").permitAll()
                 .requestMatchers("/users/register").permitAll()
+                .requestMatchers("/error").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)

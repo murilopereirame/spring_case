@@ -18,5 +18,5 @@ public interface SubTaskRepository extends CrudRepository<SubTask, String> {
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM SubTask st WHERE st.users_iduser = ?1 AND st.tasks_idtask = ?2 AND st.idsubtask = ?3")
-    void deleteSubTaskByTaskIdAndId(String users_iduser, String tasks_idtask, String subtaskId);
+    Integer deleteSubTaskByTaskIdAndId(String users_iduser, String tasks_idtask, String subtaskId);
 }

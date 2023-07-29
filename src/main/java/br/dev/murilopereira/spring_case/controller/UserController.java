@@ -1,9 +1,7 @@
 package br.dev.murilopereira.spring_case.controller;
 
-import br.dev.murilopereira.spring_case.dto.AuthenticateResponseDto;
-import br.dev.murilopereira.spring_case.dto.ErrorResponseDTO;
+import br.dev.murilopereira.spring_case.dto.*;
 import br.dev.murilopereira.spring_case.model.User;
-import br.dev.murilopereira.spring_case.dto.UserDTO;
 import br.dev.murilopereira.spring_case.repository.UserRepository;
 import br.dev.murilopereira.spring_case.service.UserService;
 import br.dev.murilopereira.spring_case.util.JwtTokenUtil;
@@ -55,8 +53,8 @@ public class UserController {
     public ResponseEntity<?> createAuthenticationToken(@RequestBody UserDTO authenticationRequest) throws Exception {
         try {
             User user = userService.authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
-            final String token = jwtTokenUtil.generateToken(user.getEmail());
-            return ResponseEntity.ok(new AuthenticateResponseDto(token));
+            final TokenDTO token = jwtTokenUtil.generateToken(user.getEmail());
+            return ResponseEntity.status(200).body(new SuccessResponseDTO("Success", token, new ArrayList<>()) );
         } catch (Exception e) {
             switch(e.getMessage()) {
                 case "USER_NOT_FOUND", "INVALID_PASSWORD" -> {

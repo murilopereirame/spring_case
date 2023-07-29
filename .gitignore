@@ -37,4 +37,11 @@ out/
 .vscode/
 
 .env
+
+### Keys ###
 *.pem
+*.key
+*.csr
+*.crt
+*.p12
+*.ext

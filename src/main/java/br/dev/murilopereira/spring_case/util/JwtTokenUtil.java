@@ -1,6 +1,7 @@
 package br.dev.murilopereira.spring_case.util;
 
 import br.dev.murilopereira.spring_case.dto.CustomUserDetails;
+import br.dev.murilopereira.spring_case.dto.TokenDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -56,15 +57,18 @@ public class JwtTokenUtil {
     }
 
     //generate token for user
-    public String generateToken(String username) throws IOException {
+    public TokenDTO generateToken(String username) throws IOException {
         Map<String, Object> claims = new HashMap<>();
         return doGenerateToken(claims, username);
     }
 
-    private String doGenerateToken(Map<String, Object> claims, String subject) throws IOException {
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+    private TokenDTO doGenerateToken(Map<String, Object> claims, String subject) throws IOException {
+        Date exp = new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000);
+        String token = Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(exp)
                 .signWith(SignatureAlgorithm.ES512, loadPrivateKey()).compact();
+
+        return new TokenDTO(token, exp);
     }
 
     public Boolean validateToken(String token, CustomUserDetails userDetails) throws IOException {
