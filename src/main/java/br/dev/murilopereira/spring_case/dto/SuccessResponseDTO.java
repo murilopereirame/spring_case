@@ -1,9 +1,10 @@
 package br.dev.murilopereira.spring_case.dto;
 
-import org.springframework.boot.context.properties.bind.DefaultValue;
+import java.util.List;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
-public record SuccessResponseDTO(String message, Object data, ArrayList<String> details ) {};
+public record SuccessResponseDTO(String message, Object data, List<?> details, String status) {
+    public SuccessResponseDTO(String message, Object data, List<?> details) {
+        this(message, data, details, "SUCCESS");
+    }
+};
 
