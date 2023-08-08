@@ -1,6 +1,7 @@
 package br.dev.murilopereira.spring_case.controller;
 
 import br.dev.murilopereira.spring_case.dto.CustomUserDetails;
+import br.dev.murilopereira.spring_case.dto.ErrorResponseDTO;
 import br.dev.murilopereira.spring_case.dto.SuccessResponseDTO;
 import br.dev.murilopereira.spring_case.dto.TaskDTO;
 import br.dev.murilopereira.spring_case.model.Task;
@@ -10,19 +11,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 
 @Controller
+@CrossOrigin("*")
 @RequestMapping(path="/tasks")
 public class TaskController {
 
@@ -55,4 +52,31 @@ public class TaskController {
                 200
         );
     }
+
+    @GetMapping(path="/details/{task_id}")
+    public @ResponseBody ResponseEntity<?> isTaskDone(
+            @PathVariable(value="task_id") String task_id,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Task task = taskRepository.findByUserAndId(userDetails.getUserUUID(), task_id);
+
+        if(task == null) {
+            return ResponseEntity
+                    .status(404)
+                    .body(
+                            new ErrorResponseDTO(
+                                    "Task Not Found",
+                                    "NOT_FOUND",
+                                    new ArrayList<>()
+                            )
+                    );
+        }
+
+        return new ResponseEntity<SuccessResponseDTO>(
+                new SuccessResponseDTO("Task listed with success", task, new ArrayList<>()),
+                new HttpHeaders(),
+                200
+        );
+    }
+
 }
