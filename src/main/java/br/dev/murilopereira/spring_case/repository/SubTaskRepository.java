@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface SubTaskRepository extends CrudRepository<SubTask, String> {
-    @Query(value = "SELECT * FROM subtasks WHERE users_iduser= ?1 AND tasks_idtask = ?2", nativeQuery = true)
+    @Query(value = "SELECT * FROM subtasks WHERE users_iduser= ?1 AND tasks_idtask = ?2 ORDER BY content", nativeQuery = true)
     Iterable<SubTask> findAllByTaskId(String users_iduser, String tasks_idtask);
 
     @Modifying
